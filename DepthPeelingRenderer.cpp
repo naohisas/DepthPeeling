@@ -172,8 +172,6 @@ void DepthPeelingRenderer::exec( kvs::ObjectBase* object, kvs::Camera* camera, k
     }
     this->finalize_peeling();
 
-    kvs::OpenGL::Finish();
-
     BaseClass::stopTimer();
 }
 
