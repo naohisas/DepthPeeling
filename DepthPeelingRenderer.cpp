@@ -150,6 +150,7 @@ void DepthPeelingRenderer::exec( kvs::ObjectBase* object, kvs::Camera* camera, k
     {
         m_width = width;
         m_height = height;
+        this->update_framebuffer( width, height );
     }
 
     const bool object_changed = m_object != object;
@@ -295,6 +296,36 @@ void DepthPeelingRenderer::create_framebuffer( const size_t width, const size_t 
         m_depth_buffer[i].create( width, height );
 
         m_framebuffer[i].create();
+        m_framebuffer[i].attachColorTexture( m_color_buffer[i] );
+        m_framebuffer[i].attachDepthTexture( m_depth_buffer[i] );
+    }
+
+    m_peeling_shader.bind();
+    m_peeling_shader.setUniform( "width", static_cast<GLfloat>( width ) );
+    m_peeling_shader.setUniform( "height", static_cast<GLfloat>( height ) );
+    m_peeling_shader.unbind();
+
+    m_blending_shader.bind();
+    m_blending_shader.setUniform( "width", static_cast<GLfloat>( width ) );
+    m_blending_shader.setUniform( "height", static_cast<GLfloat>( height ) );
+    m_blending_shader.unbind();
+
+    m_finalizing_shader.bind();
+    m_finalizing_shader.setUniform( "width", static_cast<GLfloat>( width ) );
+    m_finalizing_shader.setUniform( "height", static_cast<GLfloat>( height ) );
+    m_finalizing_shader.unbind();
+}
+
+void DepthPeelingRenderer::update_framebuffer( const size_t width, const size_t height )
+{
+    for ( size_t i = 0; i < 3; i++ )
+    {
+        m_color_buffer[i].release();
+        m_color_buffer[i].create( width, height );
+
+        m_depth_buffer[i].release();
+        m_depth_buffer[i].create( width, height );
+
         m_framebuffer[i].attachColorTexture( m_color_buffer[i] );
         m_framebuffer[i].attachDepthTexture( m_depth_buffer[i] );
     }

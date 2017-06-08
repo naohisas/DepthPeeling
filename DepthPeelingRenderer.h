@@ -63,6 +63,7 @@ private:
     void create_shader_program();
     void create_buffer_object( const kvs::PolygonObject* polygon );
     void create_framebuffer( const size_t width, const size_t height );
+    void update_framebuffer( const size_t width, const size_t height );
 
     void initialize_pass();
     void finalize_pass();
