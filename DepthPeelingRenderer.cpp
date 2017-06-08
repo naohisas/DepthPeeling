@@ -165,12 +165,12 @@ void DepthPeelingRenderer::exec( kvs::ObjectBase* object, kvs::Camera* camera, k
         this->create_buffer_object( polygon );
     }
 
-    this->initialize_peeling();
+    this->initialize_pass();
     for ( size_t i = 0; i < m_npeels; i++ )
     {
-        this->peel( polygon );
+        this->peel_pass( polygon );
     }
-    this->finalize_peeling();
+    this->finalize_pass();
 
     BaseClass::stopTimer();
 }
@@ -315,7 +315,7 @@ void DepthPeelingRenderer::create_framebuffer( const size_t width, const size_t 
     m_finalizing_shader.unbind();
 }
 
-void DepthPeelingRenderer::initialize_peeling()
+void DepthPeelingRenderer::initialize_pass()
 {
     m_cycle = 0;
     kvs::FrameBufferObject::Binder fbo( m_framebuffer[0] );
@@ -325,7 +325,7 @@ void DepthPeelingRenderer::initialize_peeling()
     kvs::OpenGL::Clear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 }
 
-void DepthPeelingRenderer::finalize_peeling()
+void DepthPeelingRenderer::finalize_pass()
 {
     kvs::OpenGL::SetDrawBuffer( GL_BACK );
     kvs::OpenGL::Enable( GL_BLEND );
@@ -338,7 +338,7 @@ void DepthPeelingRenderer::finalize_peeling()
     ::DrawRect();
 }
 
-void DepthPeelingRenderer::peel( const kvs::PolygonObject* polygon )
+void DepthPeelingRenderer::peel_pass( const kvs::PolygonObject* polygon )
 {
     const int front = m_cycle;
     const int back = 2;

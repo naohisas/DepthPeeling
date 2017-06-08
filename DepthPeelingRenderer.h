@@ -64,9 +64,9 @@ private:
     void create_buffer_object( const kvs::PolygonObject* polygon );
     void create_framebuffer( const size_t width, const size_t height );
 
-    void initialize_peeling();
-    void finalize_peeling();
-    void peel( const kvs::PolygonObject* polygon );
+    void initialize_pass();
+    void finalize_pass();
+    void peel_pass( const kvs::PolygonObject* polygon );
     void draw( const kvs::PolygonObject* polygon );
     void blend();
 };
