@@ -66,7 +66,7 @@ int main( int argc, char** argv )
         object->shallowCopy( *polygon );
 
         kvs::StochasticPolygonRenderer* renderer = new kvs::StochasticPolygonRenderer();
-        renderer->setRepetitionLevel( 100 );
+        renderer->setRepetitionLevel( 20 );
 
         screen1.registerObject( object, renderer );
     }
@@ -83,7 +83,7 @@ int main( int argc, char** argv )
 
         local::DepthPeelingRenderer* renderer = new local::DepthPeelingRenderer();
         renderer->setBackgroundColor( background_color );
-        renderer->setNumberOfPeels( 100 );
+        renderer->setNumberOfPeels( 20 );
 
         screen2.registerObject( object, renderer );
     }

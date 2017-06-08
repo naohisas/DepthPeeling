@@ -320,33 +320,24 @@ void DepthPeelingRenderer::create_framebuffer( const size_t width, const size_t 
 void DepthPeelingRenderer::initialize_peeling()
 {
     m_cycle = 0;
-    m_framebuffer[0].bind();
+    kvs::FrameBufferObject::Binder fbo( m_framebuffer[0] );
     kvs::OpenGL::SetDrawBuffer( GL_COLOR_ATTACHMENT0 );
     kvs::OpenGL::SetClearColor( kvs::Vec4::All( 0.0 ) );
     kvs::OpenGL::SetClearDepth( 0.0 );
     kvs::OpenGL::Clear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
-    m_framebuffer[0].unbind();
 }
 
 void DepthPeelingRenderer::finalize_peeling()
 {
-    KVS_GL_CALL( glBindFramebuffer( GL_FRAMEBUFFER, 0 ) );
-    KVS_GL_CALL( glDrawBuffer( GL_BACK ) );
+    kvs::OpenGL::SetDrawBuffer( GL_BACK );
     kvs::OpenGL::Enable( GL_BLEND );
-    KVS_GL_CALL( glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA ) );
+    kvs::OpenGL::SetBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
     KVS_GL_CALL( glBlendEquation( GL_FUNC_ADD ) );
 
-    kvs::Texture::SelectActiveUnit( 0 );
-    m_color_buffer[ m_cycle ].bind();
-
-    m_finalizing_shader.bind();
-    m_finalizing_shader.setUniform( "color_buffer", 0 );
+    kvs::Texture::Binder tex0( m_color_buffer[ m_cycle ], 0 );
+    kvs::ProgramObject::Binder shader( m_finalizing_shader );
     kvs::OpenGL::Disable( GL_DEPTH_TEST );
     ::DrawRect();
-    kvs::OpenGL::Enable( GL_DEPTH_TEST );
-    m_finalizing_shader.unbind();
-
-    m_color_buffer[ m_cycle ].unbind();
 }
 
 void DepthPeelingRenderer::peel( const kvs::PolygonObject* polygon )
@@ -356,51 +347,35 @@ void DepthPeelingRenderer::peel( const kvs::PolygonObject* polygon )
     const int target = ( m_cycle + 1 ) % 2;
     m_cycle = target;
 
-    m_framebuffer[back].bind();
+    kvs::FrameBufferObject::Binder fbo1( m_framebuffer[back] );
     {
         kvs::OpenGL::SetDrawBuffer( GL_COLOR_ATTACHMENT0 );
-        kvs::OpenGL::SetClearColor( kvs::Vec4::All(0) );
+        kvs::OpenGL::SetClearColor( kvs::Vec4::All( 0.0 ) );
         kvs::OpenGL::SetClearDepth( 1.0 );
         kvs::OpenGL::Clear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 
-        kvs::Texture::SelectActiveUnit( 10 );
-        m_depth_buffer[front].bind();
-        {
-            this->draw( polygon );
-        }
-        m_depth_buffer[front].unbind();
+        kvs::Texture::Binder tex10( m_depth_buffer[front], 10 );
+        this->draw( polygon );
     }
-    m_framebuffer[back].unbind();
 
-    m_framebuffer[target].bind();
+    kvs::FrameBufferObject::Binder fbo2( m_framebuffer[target] );
     {
         kvs::OpenGL::SetDrawBuffer( GL_COLOR_ATTACHMENT0 );
-        kvs::OpenGL::SetClearColor( kvs::Vec4::All(0) );
+        kvs::OpenGL::SetClearColor( kvs::Vec4::All( 0.0 ) );
         kvs::OpenGL::SetClearDepth( 1.0 );
         kvs::OpenGL::Clear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 
-        kvs::Texture::SelectActiveUnit( 11 );
-        m_color_buffer[front].bind();
-
-        kvs::Texture::SelectActiveUnit( 12 );
-        m_depth_buffer[back].bind();
-
-        kvs::Texture::SelectActiveUnit( 13 );
-        m_color_buffer[back].bind();
-        {
-            this->blend();
-        }
-        m_color_buffer[front].unbind();
-        m_depth_buffer[back].unbind();
-        m_color_buffer[back].unbind();
+        kvs::Texture::Binder tex11( m_color_buffer[front], 11 );
+        kvs::Texture::Binder tex12( m_depth_buffer[back], 12 );
+        kvs::Texture::Binder tex13( m_color_buffer[back], 13 );
+        this->blend();
     }
-    m_framebuffer[target].unbind();
 }
 
 void DepthPeelingRenderer::draw( const kvs::PolygonObject* polygon )
 {
-    kvs::VertexBufferObject::Binder bind1( m_vbo );
-    kvs::ProgramObject::Binder bind2( m_peeling_shader );
+    kvs::VertexBufferObject::Binder vbo( m_vbo );
+    kvs::ProgramObject::Binder shader( m_peeling_shader );
 
     kvs::OpenGL::Enable( GL_DEPTH_TEST );
 
@@ -410,7 +385,6 @@ void DepthPeelingRenderer::draw( const kvs::PolygonObject* polygon )
     m_peeling_shader.setUniform( "ModelViewMatrix", M );
     m_peeling_shader.setUniform( "ModelViewProjectionMatrix", PM );
     m_peeling_shader.setUniform( "NormalMatrix", N );
-    m_peeling_shader.setUniform( "depth_front", 10 );
 
     const size_t nconnections = polygon->numberOfConnections();
     const size_t nvertices = polygon->numberOfVertices();
@@ -462,15 +436,10 @@ void DepthPeelingRenderer::draw( const kvs::PolygonObject* polygon )
 void DepthPeelingRenderer::blend()
 {
     kvs::ProgramObject::Binder bind( m_blending_shader );
-
-    m_blending_shader.setUniform( "color_front", 11 );
-    m_blending_shader.setUniform( "depth_back", 12 );
-    m_blending_shader.setUniform( "color_back", 13 );
-
     kvs::OpenGL::Enable( GL_DEPTH_TEST );
-    KVS_GL_CALL( glDepthFunc( GL_ALWAYS ) );
+    kvs::OpenGL::SetDepthFunc( GL_ALWAYS );
     ::DrawRect();
-    KVS_GL_CALL( glDepthFunc( GL_LESS ) );
+    kvs::OpenGL::SetDepthFunc( GL_LESS );
 }
 
 } // end of namespace local
