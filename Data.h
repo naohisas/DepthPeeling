@@ -10,7 +10,7 @@
 namespace local
 {
 
-inline kvs::PolygonObject* Data( const local::Input& input )
+inline kvs::PolygonObject Data( const local::Input& input )
 {
     const size_t npolygons = input.npolygons;
     const kvs::RGBColor color = input.color;
@@ -44,13 +44,13 @@ inline kvs::PolygonObject* Data( const local::Input& input )
         *(pnormals++) = n.z();
     }
 
-    kvs::PolygonObject* object = new kvs::PolygonObject();
-    object->setPolygonTypeToTriangle();
-    object->setNormalTypeToPolygon();
-    object->setCoords( coords );
-    object->setNormals( normals );
-    object->setColor( color );
-    object->setOpacity( opacity );
+    kvs::PolygonObject object;
+    object.setPolygonTypeToTriangle();
+    object.setNormalTypeToPolygon();
+    object.setCoords( coords );
+    object.setNormals( normals );
+    object.setColor( color );
+    object.setOpacity( opacity );
     return object;
 }
 
