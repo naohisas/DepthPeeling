@@ -9,10 +9,6 @@ $ kvsmake -G
 $ kvsmake
 ```
 
-## Prerequisites
-
-+ [KVS](https://github.com/naohisas/KVS)
-
 ## Usage
 
 ```
@@ -30,3 +26,7 @@ Options:
 -background : Background color. (default: 255, 255, 255)
 -offscreen  : Offscreen rendering [0:disable, 1:enable]. (default: 0)
 ```
+
+## Prerequisites
+
++ [KVS](https://github.com/naohisas/KVS)
