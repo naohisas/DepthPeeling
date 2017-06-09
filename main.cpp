@@ -9,22 +9,24 @@
 
 void ParticleBasedRendering( kvs::glut::Screen& screen, local::Input& input, kvs::PolygonObject& polygon )
 {
+    screen.setSize( input.width, input.height );
     screen.setBackgroundColor( input.background );
 
     kvs::PolygonObject* object = new kvs::PolygonObject();
     object->shallowCopy( polygon );
 
     kvs::StochasticPolygonRenderer* renderer = new kvs::StochasticPolygonRenderer();
-    renderer->setRepetitionLevel( 20 );
+    renderer->setRepetitionLevel( input.nrepeats );
 
     screen.registerObject( object, renderer );
 
-    screen.show();
+    screen.create();
     kvs::Light::SetModelTwoSide( true );
 }
 
 void DepthPeelingRendering( kvs::glut::Screen& screen, local::Input& input, kvs::PolygonObject& polygon )
 {
+    screen.setSize( input.width, input.height );
     screen.setBackgroundColor( input.background );
 
     kvs::PolygonObject* object = new kvs::PolygonObject();
@@ -32,11 +34,11 @@ void DepthPeelingRendering( kvs::glut::Screen& screen, local::Input& input, kvs:
 
     local::DepthPeelingRenderer* renderer = new local::DepthPeelingRenderer();
     renderer->setBackgroundColor( input.background );
-    renderer->setNumberOfPeels( 20 );
+    renderer->setNumberOfPeels( input.npeels );
 
     screen.registerObject( object, renderer );
 
-    screen.show();
+    screen.create();
     kvs::Light::SetModelTwoSide( true );
 }
 
@@ -59,5 +61,24 @@ int main( int argc, char** argv )
     screen2.setPosition( screen1.x() + screen1.width(), screen1.y() );
     DepthPeelingRendering( screen2, input, *polygon );
 
-    return app.run();
+    if ( input.offscreen )
+    {
+        screen1.hide();
+        screen2.hide();
+
+        screen1.paintEvent();
+        screen1.scene()->camera()->snapshot().write( "result_PBR.bmp" );
+
+        screen2.paintEvent();
+        screen2.scene()->camera()->snapshot().write( "result_DPB.bmp" );
+
+        app.quit();
+        return true;
+    }
+    else
+    {
+        screen1.show();
+        screen2.show();
+        return app.run();
+    }
 }
