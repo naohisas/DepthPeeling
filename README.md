@@ -3,11 +3,15 @@
 ## Build
 
 ```
-$ git clone
+$ git clone https://github.com/naohisas/DepthPeeling.git
 $ cd DepthPeeling
 $ kvsmake -G
 $ kvsmake
 ```
+
+## Prerequisites
+
++ [KVS](https://github.com/naohisas/KVS)
 
 ## Usage
 
