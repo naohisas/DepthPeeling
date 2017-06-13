@@ -22,7 +22,7 @@ inline kvs::PolygonObject Data( const local::Input& input )
     kvs::Real32* pcoords = coords.data();
     kvs::Real32* pnormals = normals.data();
 
-    kvs::MersenneTwister rand;
+    kvs::MersenneTwister rand( input.seed );
     for ( size_t i = 0; i < npolygons; i++ )
     {
         kvs::Vec3 p0( rand(), rand(), rand() );

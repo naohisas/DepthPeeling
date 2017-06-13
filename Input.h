@@ -1,6 +1,7 @@
 #pragma once
 #include <kvs/CommandLine>
 #include <kvs/RGBColor>
+#include <ctime>
 
 
 namespace local
@@ -21,6 +22,7 @@ public:
     kvs::RGBColor color;
     kvs::RGBColor background;
     bool offscreen;
+    size_t seed;
 
 public:
     Input( int argc, char** argv ):
@@ -32,7 +34,8 @@ public:
         opacity( 0.5 ),
         color( kvs::RGBColor::Black() ),
         background( kvs::RGBColor::White() ),
-        offscreen( false )
+        offscreen( false ),
+        seed( time(NULL) )
     {
         m_commandline = kvs::CommandLine( argc, argv );
         m_commandline.addHelpOption();
@@ -45,6 +48,7 @@ public:
         m_commandline.addOption( "color", "Color value for polygon object. (default: 0, 0, 0)", 3, false );
         m_commandline.addOption( "background", "Background color. (default: 255, 255, 255)", 3, false );
         m_commandline.addOption( "offscreen", "Offscreen rendering [0:disable, 1:enable]. (default: 0)", 1, false );
+        m_commandline.addOption( "seed", "Seed point for generating polygon object. (default: time)", 1, false );
     }
 
     bool parse()
@@ -100,6 +104,11 @@ public:
         if ( m_commandline.hasOption( "offscreen" ) )
         {
             offscreen = ( m_commandline.optionValue<int>( "offscreen" ) != 0 );
+        }
+
+        if ( m_commandline.hasOption( "seed" ) )
+        {
+            seed = m_commandline.optionValue<size_t>( "seed" );
         }
 
         return true;

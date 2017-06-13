@@ -16,7 +16,7 @@ int main( int argc, char** argv )
     {
         screens.hide();
         screens.capture();
-
+        screens.dump( input );
         app.quit();
         return true;
     }

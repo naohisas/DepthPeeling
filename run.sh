@@ -11,4 +11,4 @@ COLOR=(255 0 0)
 BACKGROUND=(255 255 255)
 OFFSCREEN=0
 
-./$PROGRAM -width $WIDTH -height $HEIGHT -nrepeats $NREPEATS -npeels $NPEELS -npolygons $NPOLYGONS -opacity $OPACITY -color ${COLOR[0]} ${COLOR[1]} ${COLOR[2]} -background ${BACKGROUND[0]} ${BACKGROUND[1]} ${BACKGROUND[2]} -offscreen $OFFSCREEN
+./$PROGRAM -width $WIDTH -height $HEIGHT -nrepeats $NREPEATS -npeels $NPEELS -npolygons $NPOLYGONS -opacity $OPACITY -color ${COLOR[0]} ${COLOR[1]} ${COLOR[2]} -background ${BACKGROUND[0]} ${BACKGROUND[1]} ${BACKGROUND[2]} -offscreen $OFFSCREEN -seed 0
