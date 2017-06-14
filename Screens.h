@@ -14,6 +14,7 @@
 #include "DepthPeelingRenderer.h"
 #include "Input.h"
 #include "Data.h"
+#include "Label.h"
 
 
 namespace local
@@ -25,6 +26,9 @@ private:
     kvs::glut::Screen m_screen_pbr;
     kvs::glut::Screen m_screen_dpr;
     kvs::glut::Screen m_screen_tru;
+    local::Label m_label_pbr;
+    local::Label m_label_dpr;
+    local::Label m_label_tru;
     kvs::ColorImage m_image_pbr;
     kvs::ColorImage m_image_dpr;
     kvs::ColorImage m_image_tru;
@@ -36,7 +40,10 @@ public:
     Screens( kvs::glut::Application& app, local::Input& input ):
         m_screen_pbr( &app ),
         m_screen_dpr( &app ),
-        m_screen_tru( &app )
+        m_screen_tru( &app ),
+        m_label_pbr( &m_screen_pbr, m_screen_pbr.scene() ),
+        m_label_dpr( &m_screen_dpr, m_screen_dpr.scene() ),
+        m_label_tru( &m_screen_tru, m_screen_tru.scene() )
     {
         kvs::PolygonObject polygon = local::Data( input );
 
@@ -70,11 +77,14 @@ public:
     void capture()
     {
         m_screen_pbr.paintEvent();
+        m_screen_pbr.paintEvent();
         m_image_pbr = m_screen_pbr.scene()->camera()->snapshot();
 
         m_screen_dpr.paintEvent();
+        m_screen_dpr.paintEvent();
         m_image_dpr = m_screen_dpr.scene()->camera()->snapshot();
 
+        m_screen_tru.paintEvent();
         m_screen_tru.paintEvent();
         m_image_tru = m_screen_tru.scene()->camera()->snapshot();
 
@@ -195,6 +205,9 @@ private:
         m_screen_pbr.registerObject( object, renderer );
         m_screen_pbr.create();
         kvs::Light::SetModelTwoSide( true );
+
+        m_label_pbr.setInput( input );
+        m_label_pbr.show();
     }
 
     void setup_dpr( local::Input& input, kvs::PolygonObject& polygon )
@@ -216,6 +229,9 @@ private:
         m_screen_dpr.registerObject( object, renderer );
         m_screen_dpr.create();
         kvs::Light::SetModelTwoSide( true );
+
+        m_label_dpr.setInput( input );
+        m_label_dpr.show();
     }
 
     void setup_tru( local::Input& input, kvs::PolygonObject& polygon )
@@ -237,6 +253,9 @@ private:
         m_screen_tru.registerObject( object, renderer );
         m_screen_tru.create();
         kvs::Light::SetModelTwoSide( true );
+
+        m_label_tru.setInput( input );
+        m_label_tru.show();
     }
 
     kvs::ColorImage diff_image(
