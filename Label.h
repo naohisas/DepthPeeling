@@ -22,8 +22,11 @@ public:
         kvs::Font font;
         font.setFamilyToSans();
         font.setStyleToBold();
+        font.setEnabledShadow( true );
+        font.setShadowDistance( 2.0f );
+        font.setShadowBlur( 1.5f );
         font.setSize( 20 );
-        font.setColor( kvs::RGBColor::Black() );
+        font.setColor( kvs::RGBColor::White() );
         this->setFont( font );
         this->setMargin( 10 );
     }
