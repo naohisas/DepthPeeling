@@ -62,6 +62,9 @@ public:
 
     void show()
     {
+        m_label_pbr.show();
+        m_label_dpr.show();
+        m_label_tru.show();
         m_screen_pbr.show();
         m_screen_dpr.show();
         m_screen_tru.show();
@@ -69,6 +72,9 @@ public:
 
     void hide()
     {
+        m_label_pbr.hide();
+        m_label_dpr.hide();
+        m_label_tru.hide();
         m_screen_pbr.hide();
         m_screen_dpr.hide();
         m_screen_tru.hide();
